@@ -1,0 +1,6 @@
+Agent: Thank you for calling TechSupport, this is Ankit. How can I help you?
+Customer: My internet is not working and I have an important meeting in 10 minutes!
+Agent: I understand the urgency. Let me check your router status... Okay, I’ve sent a reset signal. Please check the lights now.
+Customer: It's back on! You're a lifesaver.
+Agent: Happy to help! Is there anything else?
+Customer: No, that's all. Thanks!
