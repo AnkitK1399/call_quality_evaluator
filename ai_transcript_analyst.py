@@ -25,7 +25,7 @@ class VerbatimEvidence(BaseModel):
 class EvaluationResponse(BaseModel):
     score: float
     score_justification: str
-    sentiment: Literal["Positive", "Neutral", "Negative"]
+    sentiment: Literal["Positive", "Neutral", "Negative","positive","negative","neutral"]
     sentiment_justification: str
     summary: str
     improvement_points: str
