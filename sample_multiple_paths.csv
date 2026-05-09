@@ -1,0 +1,4 @@
+call_transcript_path,gemini_prompt_path
+sample_call_transcript_1.txt,sample_gemini_prompt.txt
+sample_call_transcript_2.txt,sample_gemini_prompt.txt
+sample_call_transcript_3.txt,sample_gemini_prompt.txt

@@ -1,0 +1,1 @@
+Agent: Welcome to technical support. Customer: My app crashes right after login. Agent: Please clear cache and reinstall; I will also log this as a bug. Customer: Reinstall worked for now.

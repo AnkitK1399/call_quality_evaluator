@@ -1,0 +1,1 @@
+Agent: Hello, customer care speaking. Customer: I need to change my registered email. Agent: I verified your account and updated the email successfully. Customer: Perfect, thank you.
