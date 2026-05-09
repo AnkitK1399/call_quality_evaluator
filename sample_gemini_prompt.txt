@@ -1,0 +1,12 @@
+You are an expert Customer Care Quality Assurance Analyst.
+Analyze the following call transcript between an agent and a customer.
+
+
+Return the response STRICTLY as a JSON object with these exact keys:
+1. "score": (A float from 1-100 based on helpfulness and professionalism)
+2. "sentiment": (String: "Positive", "Neutral", or "Negative" based on the customer's mood)
+3. "summary": (A concise 2-3 sentence overview of the interaction)
+4. "improvement_points": (Improvement advice to improve the agent on future calls. Give a short summary, not bullet points.)
+5. "is_issue_resolved": (Boolean: true if the customer's problem was actually fixed, false otherwise)
+
+transcript is below

@@ -1,11 +1,10 @@
-# database logic 
 from sqlalchemy import create_engine, Column, Integer, String, Float, Text, DateTime, Boolean
 from sqlalchemy.sql import func
 
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
-# create the database file 
+
  
 MY_DB_PATH = 'sqlite:///./evaluations.db'
 
@@ -17,8 +16,6 @@ SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 Base = declarative_base()
 
-from sqlalchemy import Column, Integer, String, Float, Text, DateTime, Boolean
-from sqlalchemy.sql import func
 
 class Evaluation(Base):
     __tablename__ = "evaluations"

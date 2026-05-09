@@ -1,0 +1,27 @@
+Agent: Hello, thank you for calling support. How can I help you today?
+
+Customer: Yeah, I’ve already called twice about this issue and nothing has been fixed. This is really frustrating.
+
+Agent: I’m sorry to hear that. Could you please explain the issue again?
+
+Customer: That’s exactly the problem — I’ve explained it multiple times already. My payment went through, but my order still shows as pending.
+
+Agent: I understand your concern. Let me check that for you.
+
+Customer: Please do it quickly. I’ve been waiting for days now, and no one seems to care.
+
+Agent: I apologize for the inconvenience. I see the payment was received, but there seems to be a delay in processing.
+
+Customer: A delay? That’s what I was told last time too. How long does it take to fix something so simple?
+
+Agent: I completely understand your frustration. I will escalate this issue to the technical team.
+
+Customer: That’s what the last agent said as well. I don’t want another escalation, I want this resolved now.
+
+Agent: I will mark this as high priority and ensure it gets resolved as soon as possible.
+
+Customer: Honestly, this is very disappointing service. If this isn’t fixed today, I’m going to cancel everything.
+
+Agent: I truly apologize. I will personally follow up and keep you updated.
+
+Customer: You better do that. I’m really not happy with this experience.

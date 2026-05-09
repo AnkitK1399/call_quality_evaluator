@@ -1,0 +1,1 @@
+Agent: Hello, thank you for calling support. Customer: My internet has been down since morning. Agent: I will reset your connection and run a line test. Customer: Thank you, it is working now.
