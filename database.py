@@ -1,8 +1,18 @@
-from sqlalchemy import create_engine, Column, Integer, String, Float, Text, DateTime, Boolean
+from sqlalchemy import (
+    create_engine,
+    Column,
+    Integer,
+    String,
+    Float,
+    Text,
+    DateTime,
+    Boolean,
+    ForeignKey,
+)
 from sqlalchemy.sql import func
 
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import sessionmaker, relationship
 
 
 MY_DB_PATH = 'sqlite:///./evaluations.db'
@@ -25,6 +35,7 @@ class Evaluation(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     filename = Column(String)
+    promptname = Column(String, nullable=True)
     score = Column(Float)
     score_justification = Column(Text)
     sentiment = Column(String)
@@ -41,6 +52,22 @@ class Evaluation(Base):
         DateTime(timezone=True),
         server_default=func.now()
     )
+    followups = relationship("FollowUp", back_populates="evaluation")
+
+
+class FollowUp(Base):
+    __tablename__ = "followups"
+
+    id = Column(Integer, primary_key=True, index=True)
+    evaluation_id = Column(Integer, ForeignKey("evaluations.id"), nullable=False, index=True)
+    question = Column(Text, nullable=False)
+    response = Column(Text, nullable=False)
+    created_at = Column(
+        DateTime(timezone=True),
+        server_default=func.now()
+    )
+
+    evaluation = relationship("Evaluation", back_populates="followups")
 
 
 def init_db():

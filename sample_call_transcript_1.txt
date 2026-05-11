@@ -1,1 +1,4 @@
-Agent: Thank you for calling billing support. Customer: I was charged twice this month. Agent: I can see the duplicate charge and will raise a refund request today. Customer: Thanks for the quick help.
+Agent: Thank you for calling billing support. 
+Customer: I was charged twice this month. 
+Agent: I can see the duplicate charge and will raise a refund request today. 
+Customer: Thanks for the quick help.

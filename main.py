@@ -5,7 +5,8 @@ from sqlalchemy.orm import Session
 
 import database
 from ai_transcript_analyst import analyze_transcript_with_gemini
-from schemas import PathInputRequest
+from followup_context_builder import build_followup_context
+from schemas import FollowUpRequest, PathInputRequest
 
 app = FastAPI()
 
@@ -23,9 +24,14 @@ def get_db():
         db.close()
 
 
-def _build_evaluation_record(filename: str, analysis: dict) -> database.Evaluation:
+def _build_evaluation_record(
+    filename: str,
+    analysis: dict,
+    promptname: str = None,
+) -> database.Evaluation:
     return database.Evaluation(
         filename=filename,
+        promptname=promptname,
         score=analysis["score"],
         score_justification=analysis["score_justification"],
         summary=analysis["summary"],
@@ -51,6 +57,7 @@ def _evaluation_payload(evaluation: database.Evaluation) -> dict:
     return {
         "id": evaluation.id,
         "filename": evaluation.filename,
+        "promptname":evaluation.promptname,
         "score": evaluation.score,
         "score_justification": evaluation.score_justification,
         "summary": evaluation.summary,
@@ -64,6 +71,16 @@ def _evaluation_payload(evaluation: database.Evaluation) -> dict:
             "sentiment_evidence": evaluation.sentiment_evidence,
             "resolution_evidence": evaluation.resolution_evidence,
         },
+    }
+
+
+def _followup_payload(followup: database.FollowUp) -> dict:
+    return {
+        "id": followup.id,
+        "evaluation_id": followup.evaluation_id,
+        "question": followup.question,
+        "response": followup.response,
+        "created_at": followup.created_at,
     }
 
 
@@ -131,7 +148,11 @@ async def evaluate_call_from_path(payload: PathInputRequest, db: Session = Depen
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-    new_eval = _build_evaluation_record(payload.file_path, analysis)
+    new_eval = _build_evaluation_record(
+        payload.file_path,
+        analysis,
+        promptname=payload.file_path_2 if is_second_path_used else None,
+    )
     saved_eval = _save_evaluation(db, new_eval)
 
     return {
@@ -175,7 +196,11 @@ async def evaluate_call_from_csv(payload: PathInputRequest, db: Session = Depend
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-    new_eval = _build_evaluation_record(payload.file_path, analysis)
+    new_eval = _build_evaluation_record(
+        payload.file_path,
+        analysis,
+        promptname=gemini_prompt_path,
+    )
     saved_eval = _save_evaluation(db, new_eval)
 
     return {
@@ -216,7 +241,11 @@ async def evaluate_multiple_calls_from_csv(payload: PathInputRequest, db: Sessio
             concatenated_text = f"{transcript_text}\n\n{prompt_text}"
             analysis = analyze_transcript_with_gemini(concatenated_text, True)
 
-            new_eval = _build_evaluation_record(call_transcript_path, analysis)
+            new_eval = _build_evaluation_record(
+                call_transcript_path,
+                analysis,
+                promptname=gemini_prompt_path,
+            )
             saved_eval = _save_evaluation(db, new_eval)
 
             payload_item = _evaluation_payload(saved_eval)
@@ -257,3 +286,46 @@ def get_evaluation_by_id(evaluation_id: int, db: Session = Depends(get_db)):
         **_evaluation_payload(evaluation),
         "created_at": evaluation.created_at,
     }
+
+
+@app.post("/followups")
+def create_followup(payload: FollowUpRequest, db: Session = Depends(get_db)):
+    try:
+        saved_followup = build_followup_context(
+            evaluation_id=payload.evaluation_id,
+            follow_up_question=payload.question,
+            db=db,
+        )
+    except ValueError as e:
+        raise HTTPException(status_code=404, detail=str(e))
+    except FileNotFoundError:
+        raise HTTPException(
+            status_code=404,
+            detail="Transcript or Gemini prompt file not found for this evaluation",
+        )
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+    return {
+        "message": "Follow-up response generated and saved",
+        "followup": _followup_payload(saved_followup),
+    }
+
+
+@app.get("/evaluations/{evaluation_id}/followups")
+def get_followups_for_evaluation(evaluation_id: int, db: Session = Depends(get_db)):
+    evaluation = (
+        db.query(database.Evaluation)
+        .filter(database.Evaluation.id == evaluation_id)
+        .first()
+    )
+    if not evaluation:
+        raise HTTPException(status_code=404, detail="Evaluation not found")
+
+    followups = (
+        db.query(database.FollowUp)
+        .filter(database.FollowUp.evaluation_id == evaluation_id)
+        .order_by(database.FollowUp.id.asc())
+        .all()
+    )
+    return [_followup_payload(item) for item in followups]

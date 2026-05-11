@@ -93,7 +93,9 @@ Important:
             model="gemini-2.5-flash",
             contents=contents,
             config={
-                "temperature": 0.2
+                "temperature": 0.2,
+                "response_mime_type": "application/json",
+                "response_schema": EvaluationResponse
             }
         )
 
@@ -117,3 +119,18 @@ Important:
 
     except Exception as e:
         raise Exception(f"Gemini analysis failed: {str(e)}")
+
+
+def generate_followup_response_with_gemini(combined_context: str) -> str:
+    """Generate a plain-text follow-up answer from Gemini."""
+    try:
+        response = client.models.generate_content(
+            model="gemini-2.5-flash",
+            contents=combined_context,
+            config={
+                "temperature": 0.2,
+            },
+        )
+        return (response.text or "").strip()
+    except Exception as e:
+        raise Exception(f"Gemini follow-up failed: {str(e)}")
